@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>カスタマーハラスメント相談フォーム</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --text: #1f2933; --sub: #5f6b7a;
+    --line: #d9dee5; --accent: #1f6feb; --accent-weak: #e8f0fe;
+    --danger: #c62828; --danger-weak: #fdecea; --ok: #2e7d32; --ok-weak: #e8f5e9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", Meiryo, sans-serif;
+    font-size: 16px; line-height: 1.7;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 16px 16px 48px; }
+  header { padding: 16px 0 8px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .lead { color: var(--sub); font-size: 14px; margin: 0; }
+  .emergency {
+    background: var(--danger-weak); border-left: 4px solid var(--danger);
+    padding: 12px 14px; border-radius: 6px; margin: 16px 0; font-size: 14px;
+  }
+  .emergency strong { color: var(--danger); }
+  .promise {
+    background: var(--accent-weak); padding: 12px 14px; border-radius: 6px; font-size: 14px; margin-bottom: 16px;
+  }
+  .promise ul { margin: 4px 0 0; padding-left: 20px; }
+  section.card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 18px 16px; margin-bottom: 16px;
+  }
+  section.card h2 { font-size: 17px; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label.title { display: block; font-weight: 600; margin-bottom: 6px; }
+  .req { display: inline-block; background: var(--danger); color: #fff; font-size: 11px; padding: 0 6px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; }
+  .opt { display: inline-block; background: #8a94a3; color: #fff; font-size: 11px; padding: 0 6px; border-radius: 3px; margin-left: 6px; vertical-align: 2px; }
+  .hint { color: var(--sub); font-size: 13px; margin: -2px 0 6px; }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"], select, textarea {
+    width: 100%; font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--text);
+  }
+  textarea { min-height: 140px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; min-width: 0; }
+  .choices { display: grid; gap: 8px; }
+  .choices.two { grid-template-columns: 1fr 1fr; }
+  .choice {
+    display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 6px; cursor: pointer; background: #fff;
+  }
+  .choice input { margin-top: 5px; flex-shrink: 0; width: 18px; height: 18px; }
+  .choice:has(input:checked) { border-color: var(--accent); background: var(--accent-weak); }
+  .choice small { display: block; color: var(--sub); font-size: 12px; line-height: 1.5; }
+  .hidden { display: none !important; }
+  .error-msg { color: var(--danger); font-size: 13px; margin-top: 4px; display: none; }
+  .field.invalid .error-msg { display: block; }
+  .field.invalid input:not([type="radio"]):not([type="checkbox"]), .field.invalid select, .field.invalid textarea, .field.invalid .choices { outline: 2px solid var(--danger); outline-offset: 2px; border-radius: 6px; }
+  button.submit {
+    width: 100%; padding: 14px; font: inherit; font-weight: 700; font-size: 17px;
+    color: #fff; background: var(--accent); border: none; border-radius: 8px; cursor: pointer;
+  }
+  button.submit:disabled { background: #9db8e8; cursor: wait; }
+  .done { text-align: center; }
+  .done .icon { font-size: 44px; color: var(--ok); line-height: 1; }
+  .receipt { display: inline-block; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 20px; font-weight: 700; background: var(--ok-weak); padding: 8px 16px; border-radius: 6px; margin: 8px 0; letter-spacing: .05em; }
+  footer { color: var(--sub); font-size: 12px; text-align: center; margin-top: 24px; }
+  @media (max-width: 520px) {
+    .row { flex-direction: column; gap: 0; }
+    .row > .field { margin-bottom: 16px; }
+    .choices.two { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>カスタマーハラスメント相談フォーム</h1>
+  <p class="lead">お客様・取引先などから受けた言動について、総務部の相談窓口に相談できます。「カスハラかどうか分からない」ことでも相談してかまいません。</p>
+</header>
+
+<div class="emergency">
+  <strong>身の危険を感じている場合は、このフォームより先に110番通報してください。</strong><br>
+  いますぐ上長と話したい場合は、電話で連絡してください。
+</div>
+
+<div class="promise">
+  会社は次のことを約束します（カスタマーハラスメント対策規程 第17条・第18条）。
+  <ul>
+    <li>相談内容は、対応に必要な担当者だけが見ます。</li>
+    <li>相談したことや事実確認に協力したことを理由に、解雇などの不利益な扱いをすることはありません。</li>
+  </ul>
+</div>
+
+<form id="form" novalidate>
+
+  <!-- 1. 相談者 -->
+  <section class="card">
+    <h2>1. 相談する人</h2>
+
+    <div class="field" data-required="radio" data-name="reporterType">
+      <label class="title">あなたの立場<span class="req">必須</span></label>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="reporterType" value="本人">被害を受けた本人</label>
+        <label class="choice"><input type="radio" name="reporterType" value="同僚・目撃者">同僚・目撃した人</label>
+      </div>
+      <div class="error-msg">どちらかを選んでください。</div>
+    </div>
+
+    <div class="field">
+      <label class="choice"><input type="checkbox" id="anonymous" name="anonymous" value="はい">
+        <span>名前を伝えずに相談する（匿名）<small>匿名の場合、窓口から連絡できないため、詳しい事情の確認や個別の対応が難しくなります。</small></span>
+      </label>
+    </div>
+
+    <div id="identity">
+      <div class="row">
+        <div class="field" data-required="text" data-name="name">
+          <label class="title" for="name">氏名<span class="req">必須</span></label>
+          <input type="text" id="name" name="name" autocomplete="name">
+          <div class="error-msg">氏名を入力してください。</div>
+        </div>
+        <div class="field" data-required="text" data-name="department">
+          <label class="title" for="department">所属（営業所・部署）<span class="req">必須</span></label>
+          <input type="text" id="department" name="department">
+          <div class="error-msg">所属を入力してください。</div>
+        </div>
+      </div>
+
+      <div class="field" data-required="radio" data-name="contactMethod">
+        <label class="title">窓口からの連絡方法<span class="req">必須</span></label>
+        <div class="choices two">
+          <label class="choice"><input type="radio" name="contactMethod" value="電話">電話</label>
+          <label class="choice"><input type="radio" name="contactMethod" value="メール">メール</label>
+          <label class="choice"><input type="radio" name="contactMethod" value="面談">直接会って話したい</label>
+          <label class="choice"><input type="radio" name="contactMethod" value="連絡不要">連絡は不要（記録だけ残したい）</label>
+        </div>
+        <div class="error-msg">連絡方法を選んでください。</div>
+      </div>
+
+      <div class="row">
+        <div class="field" data-name="phone">
+          <label class="title" for="phone">電話番号<span class="opt">任意</span></label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel">
+          <div class="error-msg">電話での連絡を希望する場合は、電話番号を入力してください。</div>
+        </div>
+        <div class="field" data-name="email">
+          <label class="title" for="email">メールアドレス<span class="opt">任意</span></label>
+          <input type="email" id="email" name="email" autocomplete="email" inputmode="email">
+          <div class="error-msg">メールでの連絡を希望する場合は、正しいメールアドレスを入力してください。</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="title" for="contactTime">連絡してよい時間帯<span class="opt">任意</span></label>
+        <input type="text" id="contactTime" name="contactTime" placeholder="例：平日17時以降、乗務中は不可">
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 発生状況 -->
+  <section class="card">
+    <h2>2. いつ・どこで起きたか</h2>
+
+    <div class="row">
+      <div class="field" data-required="text" data-name="incidentDate">
+        <label class="title" for="incidentDate">発生日<span class="req">必須</span></label>
+        <input type="date" id="incidentDate" name="incidentDate">
+        <div class="error-msg">発生日を入力してください（だいたいの日付でかまいません）。</div>
+      </div>
+      <div class="field">
+        <label class="title" for="incidentTime">時刻<span class="opt">任意</span></label>
+        <input type="time" id="incidentTime" name="incidentTime">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="choice"><input type="checkbox" name="repeated" value="はい">
+        <span>同じ相手から何度も受けている<small>その場合、最初にあった日や回数を「具体的な内容」に書いてください。</small></span>
+      </label>
+    </div>
+
+    <div class="field" data-required="select" data-name="place">
+      <label class="title" for="place">場所・手段<span class="req">必須</span></label>
+      <select id="place" name="place">
+        <option value="">選んでください</option>
+        <option>配送先・納品先</option>
+        <option>取引先の施設</option>
+        <option>自社の事業所・営業所</option>
+        <option>移動中・車両内</option>
+        <option>電話</option>
+        <option>メール・SNS・チャット</option>
+        <option>その他</option>
+      </select>
+      <div class="error-msg">場所・手段を選んでください。</div>
+    </div>
+
+    <div class="field">
+      <label class="title" for="placeDetail">場所の詳細<span class="opt">任意</span></label>
+      <input type="text" id="placeDetail" name="placeDetail" placeholder="例：〇〇給油所、〇〇工場の荷受場">
+    </div>
+  </section>
+
+  <!-- 3. 相手方 -->
+  <section class="card">
+    <h2>3. 相手</h2>
+
+    <div class="field" data-required="select" data-name="actorType">
+      <label class="title" for="actorType">相手の区分<span class="req">必須</span></label>
+      <select id="actorType" name="actorType">
+        <option value="">選んでください</option>
+        <option>顧客（個人）</option>
+        <option>取引先・納品先の担当者</option>
+        <option>施設の利用者</option>
+        <option>分からない</option>
+        <option>その他</option>
+      </select>
+      <div class="error-msg">相手の区分を選んでください。</div>
+    </div>
+
+    <div class="field">
+      <label class="title" for="actorInfo">相手について分かること<span class="opt">任意</span></label>
+      <p class="hint">会社名、名前、特徴など、分かる範囲で。</p>
+      <input type="text" id="actorInfo" name="actorInfo">
+    </div>
+  </section>
+
+  <!-- 4. 内容 -->
+  <section class="card">
+    <h2>4. どんなことがあったか</h2>
+
+    <div class="field" data-required="checkbox" data-name="behaviors">
+      <label class="title">当てはまるもの（いくつでも）<span class="req">必須</span></label>
+      <div class="choices">
+        <label class="choice"><input type="checkbox" name="behaviors" value="身体的な攻撃"><span>身体的な攻撃<small>暴行、物を投げつける、車両や設備を蹴る</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="精神的な攻撃"><span>精神的な攻撃<small>脅し、暴言、侮辱、人格を否定する発言</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="威圧的な言動"><span>威圧的な言動<small>大声で怒鳴る、「ネットに晒す」「上を呼べ」などと脅す</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="継続的・執拗な言動"><span>継続的・しつこい言動<small>同じ要求の繰り返し、長時間の電話や居座り</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="拘束的な言動"><span>帰らせない・拘束<small>車両の前に立ちはだかる、長時間引き止める</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="差別的・性的な言動"><span>差別的・性的な言動<small>差別的な発言、セクハラ、つきまとい</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="過度な要求"><span>無理な要求<small>土下座の要求、不当な金品の要求、契約外の作業の強要</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="プライバシーの侵害"><span>プライバシーの侵害<small>無断撮影・SNSへの投稿、個人情報を聞き出す</small></span></label>
+        <label class="choice"><input type="checkbox" name="behaviors" value="その他・分からない"><span>その他・分からない</span></label>
+      </div>
+      <div class="error-msg">1つ以上選んでください。</div>
+    </div>
+
+    <div class="field" data-required="text" data-name="detail">
+      <label class="title" for="detail">具体的な内容<span class="req">必須</span></label>
+      <p class="hint">言われたこと・されたことを、できるだけそのまま書いてください。思い出せる範囲でかまいません。</p>
+      <textarea id="detail" name="detail" placeholder="例：納品時間が5分遅れたことに対し、「お前の会社との取引を切るぞ」と30分以上怒鳴られ、帰ろうとしたらトラックの前に立たれた。"></textarea>
+      <div class="error-msg">内容を入力してください。</div>
+    </div>
+
+    <div class="field">
+      <label class="title">残っている記録<span class="opt">任意</span></label>
+      <div class="choices two">
+        <label class="choice"><input type="checkbox" name="evidence" value="録音">録音</label>
+        <label class="choice"><input type="checkbox" name="evidence" value="写真・動画">写真・動画</label>
+        <label class="choice"><input type="checkbox" name="evidence" value="ドライブレコーダー">ドライブレコーダー</label>
+        <label class="choice"><input type="checkbox" name="evidence" value="メール・メッセージ">メール・メッセージ</label>
+        <label class="choice"><input type="checkbox" name="evidence" value="メモ">自分のメモ</label>
+        <label class="choice"><input type="checkbox" name="evidence" value="目撃者あり">目撃した人がいる</label>
+      </div>
+      <p class="hint" style="margin-top:6px">記録はこのフォームには添付せず、消さずに保管しておいてください。窓口から受け取り方を案内します。</p>
+    </div>
+
+    <div class="field" data-required="radio" data-name="reportedToBoss">
+      <label class="title">上長への報告<span class="req">必須</span></label>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="reportedToBoss" value="報告済み">すでに報告した</label>
+        <label class="choice"><input type="radio" name="reportedToBoss" value="未報告">まだ報告していない</label>
+        <label class="choice"><input type="radio" name="reportedToBoss" value="上長には知られたくない">上長には知られたくない</label>
+      </div>
+      <div class="error-msg">どれかを選んでください。</div>
+    </div>
+  </section>
+
+  <!-- 5. 希望 -->
+  <section class="card">
+    <h2>5. 会社にしてほしいこと</h2>
+
+    <div class="field" data-required="radio" data-name="urgency">
+      <label class="title">急ぎ具合<span class="req">必須</span></label>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="urgency" value="至急"><span>至急<small>また同じ相手のところへ行く予定がある、怖くて業務に出られない など</small></span></label>
+        <label class="choice"><input type="radio" name="urgency" value="数日以内"><span>数日以内に対応してほしい</span></label>
+        <label class="choice"><input type="radio" name="urgency" value="急がない"><span>急がない・記録として残したい</span></label>
+      </div>
+      <div class="error-msg">どれかを選んでください。</div>
+    </div>
+
+    <div class="field">
+      <label class="title">希望すること（いくつでも）<span class="opt">任意</span></label>
+      <div class="choices">
+        <label class="choice"><input type="checkbox" name="wishes" value="話を聞いてほしい">話を聞いてほしい</label>
+        <label class="choice"><input type="checkbox" name="wishes" value="担当・配送ルートを変えてほしい">担当や配送ルートを変えてほしい</label>
+        <label class="choice"><input type="checkbox" name="wishes" value="複数人で対応したい">次から複数人で対応したい</label>
+        <label class="choice"><input type="checkbox" name="wishes" value="会社から相手に対応してほしい">会社から相手に対応してほしい</label>
+        <label class="choice"><input type="checkbox" name="wishes" value="産業医・保健師に相談したい">産業医・保健師に相談したい</label>
+        <label class="choice"><input type="checkbox" name="wishes" value="記録だけ残したい">記録だけ残したい</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="title" for="note">その他伝えたいこと<span class="opt">任意</span></label>
+      <textarea id="note" name="note" style="min-height:90px"></textarea>
+    </div>
+  </section>
+
+  <button type="submit" class="submit" id="submitBtn">相談を送信する</button>
+  <p class="hint" style="text-align:center;margin-top:8px">送信後に受付番号が表示されます。</p>
+</form>
+
+<section class="card done hidden" id="done">
+  <div class="icon">&#10003;</div>
+  <h2 style="border:none;margin-bottom:0">相談を受け付けました</h2>
+  <p>受付番号</p>
+  <div class="receipt" id="receiptNo"></div>
+  <p style="font-size:14px">窓口に問い合わせるときは、この番号を伝えてください。<br>
+  <span id="doneContact">窓口の担当者から、希望の方法で連絡します。</span></p>
+  <p style="font-size:14px;color:var(--sub)">身の危険を感じたときは、ためらわず110番通報してください。</p>
+</section>
+
+<footer>カスタマーハラスメント相談窓口（総務部）</footer>
+</div>
+
+<script>
+// ▼▼ Apps Script をウェブアプリとしてデプロイした URL をここに貼る ▼▼
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby1upTdngoP-whtgH1DsNFPat24zCi2ROBFFyfjtLKb_rNw1CL1qQ2m9T6E7cr8_Wlf/exec';
+// ▲▲▲▲
+
+const form = document.getElementById('form');
+const anon = document.getElementById('anonymous');
+const identity = document.getElementById('identity');
+
+anon.addEventListener('change', () => {
+  identity.classList.toggle('hidden', anon.checked);
+  if (anon.checked) identity.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+});
+
+// 入力したらエラー表示を消す
+form.addEventListener('input', e => {
+  const f = e.target.closest('.field');
+  if (f) f.classList.remove('invalid');
+});
+
+function val(name) {
+  const el = form.elements[name];
+  if (!el) return '';
+  if (el instanceof RadioNodeList) {
+    const first = el[0];
+    if (first && first.type === 'checkbox') {
+      return Array.from(el).filter(x => x.checked).map(x => x.value).join('、');
+    }
+    return el.value || '';
+  }
+  if (el.type === 'checkbox') return el.checked ? el.value : '';
+  return (el.value || '').trim();
+}
+
+function validate() {
+  let firstBad = null;
+  form.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+
+  form.querySelectorAll('.field[data-required]').forEach(f => {
+    if (anon.checked && identity.contains(f)) return;
+    const name = f.dataset.name;
+    const ok = val(name) !== '';
+    if (!ok) { f.classList.add('invalid'); firstBad = firstBad || f; }
+  });
+
+  // 連絡方法に応じた連絡先チェック
+  if (!anon.checked) {
+    const method = val('contactMethod');
+    const phoneF = form.querySelector('[data-name="phone"]');
+    const emailF = form.querySelector('[data-name="email"]');
+    if (method === '電話' && !val('phone')) { phoneF.classList.add('invalid'); firstBad = firstBad || phoneF; }
+    const email = val('email');
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if ((method === 'メール' && !emailOk) || (email && !emailOk)) { emailF.classList.add('invalid'); firstBad = firstBad || emailF; }
+  }
+
+  if (firstBad) firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return !firstBad;
+}
+
+function makeReceiptNo() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let r = '';
+  const buf = new Uint32Array(4);
+  crypto.getRandomValues(buf);
+  buf.forEach(n => r += chars[n % chars.length]);
+  return `KH-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${r}`;
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validate()) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '送信しています…';
+
+  const isAnon = anon.checked;
+  const receiptNo = makeReceiptNo();
+  const data = {
+    receiptNo,
+    reporterType: val('reporterType'),
+    anonymous: isAnon ? 'はい' : 'いいえ',
+    name: isAnon ? '' : val('name'),
+    department: isAnon ? '' : val('department'),
+    contactMethod: isAnon ? '' : val('contactMethod'),
+    phone: isAnon ? '' : val('phone'),
+    email: isAnon ? '' : val('email'),
+    contactTime: isAnon ? '' : val('contactTime'),
+    incidentDate: val('incidentDate'),
+    incidentTime: val('incidentTime'),
+    repeated: val('repeated') || 'いいえ',
+    place: val('place'),
+    placeDetail: val('placeDetail'),
+    actorType: val('actorType'),
+    actorInfo: val('actorInfo'),
+    behaviors: val('behaviors'),
+    detail: val('detail'),
+    evidence: val('evidence'),
+    reportedToBoss: val('reportedToBoss'),
+    urgency: val('urgency'),
+    wishes: val('wishes'),
+    note: val('note'),
+    userAgent: navigator.userAgent
+  };
+
+  try {
+    // GAS は CORS ヘッダーを返さないため no-cors で送信（応答は読めない）
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(data)
+    });
+    document.getElementById('receiptNo').textContent = receiptNo;
+    if (isAnon || data.contactMethod === '連絡不要') {
+      document.getElementById('doneContact').textContent = '今回は窓口からの連絡はありません。追加で伝えたいことがあれば、受付番号を添えて再度相談してください。';
+    }
+    form.classList.add('hidden');
+    document.getElementById('done').classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    alert('送信できませんでした。電波の良い場所でもう一度送信するか、相談窓口に電話してください。');
+    btn.disabled = false;
+    btn.textContent = '相談を送信する';
+  }
+});
+</script>
+</body>
+</html>
